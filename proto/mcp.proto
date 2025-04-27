@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package mcp;
+option go_package = "github.com/ruudniew/mcp-go/proto";
+
+// MCPService defines the gRPC service for Model Context Protocol
+service MCPService {
+  // StreamMessages establishes a bidirectional stream for JSON-RPC messages
+  rpc StreamMessages(stream MCPMessage) returns (stream MCPMessage) {}
+  
+  // SendMessage sends a single message and returns a response
+  rpc SendMessage(MCPMessage) returns (MCPMessage) {}
+}
+
+// MCPMessage represents a JSON-RPC message in the MCP protocol
+message MCPMessage {
+  // The raw JSON-RPC message content
+  bytes content = 1;
+  // Optional session ID for maintaining client identity
+  string session_id = 2;
+}
+
+// SessionInfo contains information about an MCP session
+message SessionInfo {
+  string session_id = 1;
+}

@@ -1,0 +1,58 @@
+version: '3'
+
+tasks:
+  install-protoc:
+    desc: Install Protocol Buffers compiler
+    cmds:
+      - |
+        if ! command -v protoc &> /dev/null; then
+          echo "Protocol Buffers compiler not found, installing..."
+          {{if eq OS "darwin"}}
+          brew install protobuf
+          {{else if eq OS "linux"}}
+          apt-get update && apt-get install -y protobuf-compiler
+          {{else if eq OS "windows"}}
+          echo "Please install Protocol Buffers compiler manually from https://github.com/protocolbuffers/protobuf/releases"
+          {{end}}
+        else
+          echo "Protocol Buffers compiler already installed."
+        fi
+  proto:
+    desc: Generate code from proto files
+    deps: [install-protoc]
+    cmds:
+      - go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+      - go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+      - go generate ./proto
+    sources:
+      - proto/mcp.proto
+    generates:
+      - proto/mcp.pb.go
+      - proto/mcp_grpc.pb.go
+
+  tidy:
+    desc: Tidy go modules
+    cmds:
+      - go mod tidy
+
+  test:
+    desc: Run tests
+    cmds:
+      - go test ./...
+
+  build:
+    desc: Build project
+    deps: [proto]
+    cmds:
+      - go build ./...
+
+  example-grpc:
+    desc: Run gRPC example
+    deps: [proto]
+    cmds:
+      - go run examples/grpc_transport/main.go
+
+  clean:
+    desc: Clean generated files
+    cmds:
+      - rm -f proto/mcp.pb.go proto/mcp_grpc.pb.go

@@ -1,8 +1,8 @@
 <!-- omit in toc -->
 # MCP Go 🚀
-[![Build](https://github.com/mark3labs/mcp-go/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mark3labs/mcp-go/actions/workflows/ci.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/mark3labs/mcp-go?cache)](https://goreportcard.com/report/github.com/mark3labs/mcp-go)
-[![GoDoc](https://pkg.go.dev/badge/github.com/mark3labs/mcp-go.svg)](https://pkg.go.dev/github.com/mark3labs/mcp-go)
+[![Build](https://github.com/ruudniew/mcp-go/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ruudniew/mcp-go/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ruudniew/mcp-go?cache)](https://goreportcard.com/report/github.com/ruudniew/mcp-go)
+[![GoDoc](https://pkg.go.dev/badge/github.com/ruudniew/mcp-go.svg)](https://pkg.go.dev/github.com/ruudniew/mcp-go)
 
 <div align="center">
 
@@ -26,8 +26,8 @@ import (
     "errors"
     "fmt"
 
-    "github.com/mark3labs/mcp-go/mcp"
-    "github.com/mark3labs/mcp-go/server"
+    "github.com/ruudniew/mcp-go/mcp"
+    "github.com/ruudniew/mcp-go/server"
 )
 
 func main() {
@@ -100,7 +100,7 @@ MCP Go handles all the complex protocol details and server management, so you ca
 ## Installation
 
 ```bash
-go get github.com/mark3labs/mcp-go
+go get github.com/ruudniew/mcp-go
 ```
 
 ## Quickstart
@@ -115,8 +115,8 @@ import (
     "errors"
     "fmt"
 
-    "github.com/mark3labs/mcp-go/mcp"
-    "github.com/mark3labs/mcp-go/server"
+    "github.com/ruudniew/mcp-go/mcp"
+    "github.com/ruudniew/mcp-go/server"
 )
 
 func main() {
@@ -189,6 +189,80 @@ The [Model Context Protocol (MCP)](https://modelcontextprotocol.io) lets you bui
 
 ## Core Concepts
 
+
+### Transports
+
+<details>
+<summary>Show Transport Examples</summary>
+
+MCP Go supports multiple transport mechanisms for communication between clients and servers:
+
+- **stdio**: Simple standard input/output transport for direct process communication
+- **HTTP/SSE**: HTTP-based transport using Server-Sent Events for streaming
+- **In-Process**: For communication within the same process
+- **gRPC**: High-performance bidirectional streaming (new!)
+
+#### gRPC Transport
+
+The gRPC transport provides a high-performance, bidirectional streaming option with several advantages:
+
+- Efficient binary serialization with Protocol Buffers
+- Bidirectional streaming for real-time communication
+- Strong type safety
+- Built-in connection management
+
+Server example:
+```go
+// Create MCP server
+mcpServer := server.NewMCPServer(
+    "gRPC Example",
+    "1.0.0",
+    server.WithToolCapabilities(true),
+)
+
+// Add your tools, resources, etc.
+mcpServer.AddTool(...)
+
+// Create gRPC server
+grpcServer := server.NewGRPCServer(mcpServer)
+
+// Start serving on port 50051
+fmt.Println("Starting gRPC server on :50051...")
+if err := grpcServer.Start(":50051"); err != nil {
+    log.Fatalf("Failed to start server: %v", err)
+}
+```
+
+Client example:
+```go
+// Create client
+mcpClient, err := client.NewMCPClient("example-client", "1.0.0")
+if err != nil {
+    log.Fatalf("Failed to create client: %v", err)
+}
+
+// Create gRPC transport
+grpcTransport, err := transport.NewGRPC("localhost:50051", transport.WithInsecure())
+if err != nil {
+    log.Fatalf("Failed to create gRPC transport: %v", err)
+}
+
+// Use the transport
+ctx := context.Background()
+err = mcpClient.Start(ctx, grpcTransport)
+if err != nil {
+    log.Fatalf("Failed to start client: %v", err)
+}
+defer mcpClient.Close()
+
+// Initialize the client and use as normal
+err = mcpClient.Initialize(ctx)
+// ...
+```
+
+See the `examples/grpc_transport` directory for a complete example.
+
+</details>
 
 ### Server
 
@@ -512,7 +586,12 @@ Prompts can include:
 
 ## Examples
 
-For examples, see the `examples/` directory.
+The `examples/` directory contains several examples demonstrating different aspects of MCP Go:
+
+- **everything**: A comprehensive example showing most features
+- **custom_context**: Shows how to use custom context in your handlers
+- **filesystem_stdio_client**: A client for file system operations
+- **grpc_transport**: Demonstrates using the gRPC transport (new!)
 
 ## Extras
 
@@ -548,7 +627,7 @@ Go version >= 1.23
 Create a fork of this repository, then clone it:
 
 ```bash
-git clone https://github.com/mark3labs/mcp-go.git
+git clone https://github.com/ruudniew/mcp-go.git
 cd mcp-go
 ```
 

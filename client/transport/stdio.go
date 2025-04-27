@@ -10,7 +10,7 @@ import (
 	"os/exec"
 	"sync"
 
-	"github.com/mark3labs/mcp-go/mcp"
+	"github.com/ruudniew/mcp-go/mcp"
 )
 
 // Stdio implements the transport layer of the MCP protocol using stdio communication.
@@ -107,7 +107,7 @@ func (c *Stdio) Close() error {
 	}
 	// cancel all in-flight request
 	close(c.done)
-	
+
 	if err := c.stdin.Close(); err != nil {
 		return fmt.Errorf("failed to close stdin: %w", err)
 	}
@@ -230,7 +230,7 @@ func (c *Stdio) SendNotification(
 	if c.stdin == nil {
 		return fmt.Errorf("stdio client not started")
 	}
-	
+
 	notificationBytes, err := json.Marshal(notification)
 	if err != nil {
 		return fmt.Errorf("failed to marshal notification: %w", err)

@@ -67,16 +67,11 @@ type ToolListChangedNotification struct {
 
 // Tool represents the definition for a tool the client can call.
 type Tool struct {
-	// The name of the tool.
-	Name string `json:"name"`
-	// A human-readable description of the tool.
-	Description string `json:"description,omitempty"`
-	// A JSON Schema object defining the expected parameters for the tool.
-	InputSchema ToolInputSchema `json:"inputSchema"`
-	// Alternative to InputSchema - allows arbitrary JSON Schema to be provided
-	RawInputSchema json.RawMessage `json:"-"` // Hide this from JSON marshaling
-	// Optional properties describing tool behavior
-	Annotations ToolAnnotation `json:"annotations"`
+    Name           string          `json:"name"`
+    Description    string          `json:"description,omitempty"`
+    InputSchema    ToolInputSchema `json:"inputSchema"`
+    RawInputSchema json.RawMessage `json:"-"`
+    Annotations    ToolAnnotation  `json:"annotations"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Tool.

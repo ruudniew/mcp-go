@@ -2,7 +2,7 @@ package client
 
 import (
 	"fmt"
-	"github.com/mark3labs/mcp-go/client/transport"
+	"github.com/ruudniew/mcp-go/client/transport"
 	"net/url"
 )
 

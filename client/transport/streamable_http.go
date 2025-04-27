@@ -15,7 +15,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/mark3labs/mcp-go/mcp"
+	"github.com/ruudniew/mcp-go/mcp"
+)
+
+const (
+	initializeMethod   = "initialize"
+	headerKeySessionID = "Mcp-Session-Id"
 )
 
 type StreamableHTTPCOption func(*StreamableHTTP)
@@ -125,11 +130,6 @@ func (c *StreamableHTTP) Close() error {
 
 	return nil
 }
-
-const (
-	initializeMethod   = "initialize"
-	headerKeySessionID = "Mcp-Session-Id"
-)
 
 // sendRequest sends a JSON-RPC request to the server and waits for a response.
 // Returns the raw JSON response message or an error if the request fails.

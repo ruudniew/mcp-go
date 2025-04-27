@@ -11,7 +11,7 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/mark3labs/mcp-go/mcp"
+	"github.com/ruudniew/mcp-go/mcp"
 )
 
 // resourceEntry holds both a resource and its handler
@@ -463,7 +463,6 @@ func (s *MCPServer) AddResourceTemplate(
 	} else {
 		s.capabilitiesMu.RUnlock()
 	}
-
 
 	s.resourcesMu.Lock()
 	defer s.resourcesMu.Unlock()
